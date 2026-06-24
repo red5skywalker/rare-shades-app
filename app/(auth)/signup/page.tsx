@@ -24,52 +24,83 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-logo">Rare Shades</div>
-        <h1 className="auth-title">Start your logbook</h1>
-        <p className="auth-subtitle">Create a free account to log Porsche color sightings</p>
+    <div style={{
+      minHeight: '100svh',
+      background: 'var(--bg)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1.5rem',
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: 420,
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        borderRadius: 'var(--radius)',
+        padding: '2.5rem 2rem',
+        boxShadow: 'var(--shadow-soft)',
+      }}>
+        {/* Brand */}
+        <div style={{ marginBottom: '2rem' }}>
+          <p className="eyebrow" style={{ margin: 0 }}>Paint archive</p>
+          <h2 style={{ margin: '4px 0 0', fontSize: 28 }}>Rare Shades</h2>
+        </div>
 
-        {error && <div className="error-msg">{error}</div>}
-        {success && <div className="success-msg">{success}</div>}
+        <h3 style={{ marginBottom: 4 }}>Start your logbook</h3>
+        <p style={{ marginBottom: '1.5rem' }}>Create a free account to log Porsche color sightings</p>
+
+        {error && (
+          <div style={{
+            background: 'rgba(213,0,28,0.08)',
+            border: '1px solid rgba(213,0,28,0.25)',
+            color: 'var(--red)',
+            fontSize: 14,
+            padding: '10px 14px',
+            borderRadius: 'var(--radius)',
+            marginBottom: '1rem',
+          }}>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div style={{
+            background: 'rgba(24,116,80,0.08)',
+            border: '1px solid rgba(24,116,80,0.3)',
+            color: 'var(--green)',
+            fontSize: 14,
+            padding: '10px 14px',
+            borderRadius: 'var(--radius)',
+            marginBottom: '1rem',
+          }}>
+            {success}
+          </div>
+        )}
 
         {!success && (
           <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                placeholder="you@example.com"
-              />
+            <div className="form-grid" style={{ gridTemplateColumns: '1fr' }}>
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+              </div>
+              <div className="field">
+                <label htmlFor="password">Password</label>
+                <input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="At least 8 characters" />
+              </div>
             </div>
-            <div className="field" style={{ marginBottom: '1.5rem' }}>
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                minLength={8}
-                placeholder="At least 8 characters"
-              />
+            <div className="form-actions" style={{ marginTop: 20 }}>
+              <button type="submit" className="primary-button" disabled={loading} style={{ width: '100%' }}>
+                {loading ? 'Creating account…' : 'Create Account'}
+              </button>
             </div>
-
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'Creating account…' : 'Create Account'}
-            </button>
           </form>
         )}
 
-        <div className="divider-text">or</div>
-
-        <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        <p style={{ marginTop: '1.5rem', marginBottom: 0, textAlign: 'center', fontSize: 14 }}>
           Already have an account?{' '}
-          <Link href="/login" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/login" style={{ color: 'var(--ink)', fontWeight: 600 }}>
             Sign in
           </Link>
         </p>

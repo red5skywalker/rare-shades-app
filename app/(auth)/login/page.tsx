@@ -20,48 +20,67 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-logo">Rare Shades</div>
-        <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-subtitle">Sign in to your spotting logbook</p>
+    <div style={{
+      minHeight: '100svh',
+      background: 'var(--bg)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1.5rem',
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: 420,
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        borderRadius: 'var(--radius)',
+        padding: '2.5rem 2rem',
+        boxShadow: 'var(--shadow-soft)',
+      }}>
+        {/* Brand */}
+        <div style={{ marginBottom: '2rem' }}>
+          <p className="eyebrow" style={{ margin: 0 }}>Paint archive</p>
+          <h2 style={{ margin: '4px 0 0', fontSize: 28 }}>Rare Shades</h2>
+        </div>
 
-        {error && <div className="error-msg">{error}</div>}
+        <h3 style={{ marginBottom: 4 }}>Welcome back</h3>
+        <p style={{ marginBottom: '1.5rem' }}>Sign in to your spotting logbook</p>
+
+        {error && (
+          <div style={{
+            background: 'rgba(213,0,28,0.08)',
+            border: '1px solid rgba(213,0,28,0.25)',
+            color: 'var(--red)',
+            fontSize: 14,
+            padding: '10px 14px',
+            borderRadius: 'var(--radius)',
+            marginBottom: '1rem',
+          }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              placeholder="you@example.com"
-            />
+          <div className="form-grid" style={{ gridTemplateColumns: '1fr' }}>
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+            </div>
+            <div className="field">
+              <label htmlFor="password">Password</label>
+              <input id="password" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
+            </div>
           </div>
-          <div className="field" style={{ marginBottom: '1.5rem' }}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              placeholder="••••••••"
-            />
+          <div className="form-actions" style={{ marginTop: 20 }}>
+            <button type="submit" className="primary-button" disabled={loading} style={{ width: '100%' }}>
+              {loading ? 'Signing in…' : 'Sign In'}
+            </button>
           </div>
-
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign In'}
-          </button>
         </form>
 
-        <div className="divider-text">or</div>
-
-        <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        <p style={{ marginTop: '1.5rem', marginBottom: 0, textAlign: 'center', fontSize: 14 }}>
           No account yet?{' '}
-          <Link href="/signup" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/signup" style={{ color: 'var(--ink)', fontWeight: 600 }}>
             Create one
           </Link>
         </p>
