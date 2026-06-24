@@ -1,0 +1,21 @@
+# Render deployment config
+# https://render.com/docs/render-yaml
+# Place this file at the root of your repository.
+
+services:
+  - type: web
+    name: rare-shades
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
