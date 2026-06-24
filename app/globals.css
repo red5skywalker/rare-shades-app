@@ -1396,20 +1396,7 @@ aside.panel:not(.content-grid) {
 }
 
 .auth-shell {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --surface-elevated: #1c1c1c;
-  --border: #252525;
-  --border-muted: #1c1c1c;
-  --accent: #10b981;
-  --accent-dim: #059669;
-  --accent-muted: rgba(16, 185, 129, 0.12);
-  --text: #f0f0f0;
-  --text-muted: #999;
-  --text-dim: #555;
-  --red: #ef4444;
   min-height: 100svh;
-  color: var(--text);
   background: var(--bg);
 }
 
@@ -1426,15 +1413,15 @@ aside.panel:not(.content-grid) {
   width: 100%;
   max-width: 400px;
   padding: 2.5rem 2rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface);
-  box-shadow: none;
+  box-shadow: var(--shadow-soft);
 }
 
 .auth-shell .auth-logo {
   margin-bottom: 2rem;
-  color: var(--accent);
+  color: var(--muted);
   font-size: 0.65rem;
   font-weight: 600;
   font-family: var(--font-geist-mono), monospace;
@@ -1444,7 +1431,7 @@ aside.panel:not(.content-grid) {
 
 .auth-shell .auth-title {
   margin-bottom: 0.375rem;
-  color: var(--text);
+  color: var(--ink);
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1453,7 +1440,7 @@ aside.panel:not(.content-grid) {
 
 .auth-shell .auth-subtitle {
   margin-bottom: 2rem;
-  color: var(--text-muted);
+  color: var(--muted);
   font-size: 0.875rem;
 }
 
@@ -1464,7 +1451,7 @@ aside.panel:not(.content-grid) {
 .auth-shell .field label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--text-muted);
+  color: var(--muted);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1477,10 +1464,10 @@ aside.panel:not(.content-grid) {
   width: 100%;
   min-height: auto;
   padding: 0.625rem 0.875rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--text);
-  background: var(--surface-elevated);
+  color: var(--ink);
+  background: var(--surface);
   font-size: 0.9375rem;
   font-family: inherit;
 }
@@ -1488,13 +1475,14 @@ aside.panel:not(.content-grid) {
 .auth-shell .field input:focus,
 .auth-shell .field select:focus,
 .auth-shell .field textarea:focus {
-  border-color: var(--accent);
+  border-color: var(--ink);
   box-shadow: none;
+  outline: none;
 }
 
 .auth-shell .field input::placeholder,
 .auth-shell .field textarea::placeholder {
-  color: var(--text-dim);
+  color: var(--muted);
 }
 
 .auth-shell .field select option {
@@ -1507,19 +1495,20 @@ aside.panel:not(.content-grid) {
   padding: 0.75rem 1.5rem;
   border: 0;
   border-radius: 8px;
-  background: var(--accent);
-  color: #000;
+  background: var(--ink);
+  color: #fff;
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
   box-shadow: none;
 }
 
 .auth-shell .btn-primary:hover {
   transform: none;
-  background: var(--accent-dim);
+  background: #2a2a2a;
   border-color: transparent;
   box-shadow: none;
 }
@@ -1527,9 +1516,9 @@ aside.panel:not(.content-grid) {
 .auth-shell .btn-ghost {
   display: inline-block;
   padding: 0.625rem 1.25rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--text-muted);
+  color: var(--muted);
   background: transparent;
   font-size: 0.875rem;
   text-decoration: none;
@@ -1538,8 +1527,8 @@ aside.panel:not(.content-grid) {
 
 .auth-shell .btn-ghost:hover {
   transform: none;
-  border-color: var(--text-muted);
-  color: var(--text);
+  border-color: var(--muted);
+  color: var(--ink);
   background: transparent;
   box-shadow: none;
 }
@@ -1547,7 +1536,7 @@ aside.panel:not(.content-grid) {
 .auth-shell .btn-danger {
   display: inline-block;
   padding: 0.5rem 1rem;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(213,0,28,0.3);
   border-radius: 6px;
   color: var(--red);
   background: transparent;
@@ -1560,7 +1549,7 @@ aside.panel:not(.content-grid) {
 .auth-shell .btn-danger:hover {
   transform: none;
   border-color: var(--red);
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(213,0,28,0.08);
   box-shadow: none;
 }
 
@@ -1573,15 +1562,15 @@ aside.panel:not(.content-grid) {
 }
 
 .auth-shell .error-msg {
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
-  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(213,0,28,0.25);
+  color: var(--red);
+  background: rgba(213,0,28,0.06);
 }
 
 .auth-shell .success-msg {
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
-  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(24,116,80,0.3);
+  color: var(--green);
+  background: rgba(24,116,80,0.06);
 }
 
 .auth-shell .divider-text {
@@ -1589,7 +1578,7 @@ aside.panel:not(.content-grid) {
   align-items: center;
   gap: 0.75rem;
   margin: 1.5rem 0;
-  color: var(--text-dim);
+  color: var(--muted);
   font-size: 0.75rem;
 }
 
@@ -1598,5 +1587,5 @@ aside.panel:not(.content-grid) {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--border);
+  background: var(--line);
 }
