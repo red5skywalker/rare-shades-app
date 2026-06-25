@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { updateSighting } from '@/app/actions'
-import { COLORS, MODELS } from '@/lib/colors'
+import { MODELS } from '@/lib/colors'
 import type { Sighting } from '@/lib/app-data'
+import ColorPicker from '@/app/(main)/components/ColorPicker'
 
 export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
   const [isPending, startTransition] = useTransition()
@@ -17,6 +18,11 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
 
     const formData = new FormData(event.currentTarget)
     formData.set('remove_photo', removePhoto ? 'true' : 'false')
+
+    if (!formData.get('color_slug')) {
+      setError('Please select a color.')
+      return
+    }
 
     const photo = formData.get('photo') as File | null
     if (photo && photo.size > 8 * 1024 * 1024) {
@@ -46,15 +52,8 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
           {error && <div className="error-msg">{error}</div>}
           <div className="form-grid">
             <div className="field full">
-              <label htmlFor="color_slug">Porsche color</label>
-              <select id="color_slug" name="color_slug" required defaultValue={sighting.color_slug}>
-                <option value="">Choose a color</option>
-                {COLORS.map((color) => (
-                  <option key={color.slug} value={color.slug}>
-                    {color.name} - {color.code} - {color.rarityCategory}
-                  </option>
-                ))}
-              </select>
+              <label>Porsche color</label>
+              <ColorPicker initialSlug={sighting.color_slug} />
             </div>
             <div className="field">
               <label htmlFor="model">Model</label>

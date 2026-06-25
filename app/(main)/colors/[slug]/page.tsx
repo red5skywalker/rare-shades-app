@@ -43,7 +43,7 @@ export default async function ColorDetailPage({
           <h1>{color.name}</h1>
           <p>{color.historical}</p>
           <div className="hero-actions">
-            <Link href="/logbook/new" className="primary-button" style={{ textDecoration: 'none' }}>
+            <Link href={`/logbook/new?color=${color.slug}`} className="primary-button" style={{ textDecoration: 'none' }}>
               Log this color
             </Link>
             <Link href="/colors" className="ghost-button" style={{ textDecoration: 'none' }}>
