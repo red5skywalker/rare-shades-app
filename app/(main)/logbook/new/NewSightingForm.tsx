@@ -6,10 +6,12 @@ import { createSighting } from '@/app/actions'
 import { MODELS } from '@/lib/models'
 import ColorPicker from '@/app/(main)/components/ColorPicker'
 import SearchableSelect from '@/app/(main)/components/SearchableSelect'
+import PhotoPositionPicker from '@/app/(main)/components/PhotoPositionPicker'
 
 export default function NewSightingForm({ initialColorSlug }: { initialColorSlug?: string }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null)
   const today = new Date().toISOString().slice(0, 10)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -86,7 +88,19 @@ export default function NewSightingForm({ initialColorSlug }: { initialColorSlug
               <label htmlFor="photo">
                 Your photo <span style={{ fontWeight: 400, color: 'var(--muted)' }}>(optional)</span>
               </label>
-              <input id="photo" name="photo" type="file" accept="image/*" />
+              <input
+                id="photo"
+                name="photo"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  setPhotoPreviewUrl(file ? URL.createObjectURL(file) : null)
+                }}
+              />
+              {photoPreviewUrl && (
+                <PhotoPositionPicker src={photoPreviewUrl} />
+              )}
             </div>
           </div>
           <div className="form-actions" style={{ marginTop: 16 }}>

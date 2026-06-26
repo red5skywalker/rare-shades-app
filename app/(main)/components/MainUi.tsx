@@ -80,7 +80,11 @@ export function SightingCard({ sighting, color }: { sighting: Sighting; color: P
           style={{ '--paint-one': color.hex[0], '--paint-two': color.hex[1] } as CSSProperties}
         >
           {sighting.photo_url && (
-            <img src={sighting.photo_url} alt={`${color.name} sighting`} />
+            <img
+              src={sighting.photo_url}
+              alt={`${color.name} sighting`}
+              style={{ objectPosition: sighting.photo_position ?? '50% 50%' }}
+            />
           )}
         </div>
         <div className="card-body">

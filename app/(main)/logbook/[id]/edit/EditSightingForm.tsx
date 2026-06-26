@@ -7,11 +7,13 @@ import { MODELS } from '@/lib/models'
 import type { Sighting } from '@/lib/app-data'
 import ColorPicker from '@/app/(main)/components/ColorPicker'
 import SearchableSelect from '@/app/(main)/components/SearchableSelect'
+import PhotoPositionPicker from '@/app/(main)/components/PhotoPositionPicker'
 
 export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [removePhoto, setRemovePhoto] = useState(false)
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -112,12 +114,11 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
                   {sighting.photo_url ? '(upload to replace current)' : '(optional)'}
                 </span>
               </label>
-              {sighting.photo_url && !removePhoto && (
+              {sighting.photo_url && !removePhoto && !photoPreviewUrl && (
                 <div style={{ marginBottom: 10 }}>
-                  <img
+                  <PhotoPositionPicker
                     src={sighting.photo_url}
-                    alt="Current sighting photo"
-                    style={{ maxHeight: 140, borderRadius: 6, objectFit: 'cover', display: 'block' }}
+                    initialPosition={sighting.photo_position ?? '50% 50%'}
                   />
                   <button
                     type="button"
@@ -143,7 +144,19 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
                 </p>
               )}
               {!removePhoto && (
-                <input id="photo" name="photo" type="file" accept="image/*" />
+                <input
+                  id="photo"
+                  name="photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    setPhotoPreviewUrl(file ? URL.createObjectURL(file) : null)
+                  }}
+                />
+              )}
+              {photoPreviewUrl && !removePhoto && (
+                <PhotoPositionPicker src={photoPreviewUrl} />
               )}
             </div>
           </div>

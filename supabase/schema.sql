@@ -32,6 +32,7 @@ create table if not exists public.sighting (
   location_label text not null,
   notes          text,
   photo_url      text,
+  photo_position text not null default '50% 50%',
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now()
 );

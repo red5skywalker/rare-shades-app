@@ -25,6 +25,7 @@ export interface Sighting {
   location_label: string
   notes: string | null
   photo_url: string | null
+  photo_position: string
   created_at: string
   updated_at: string
 }

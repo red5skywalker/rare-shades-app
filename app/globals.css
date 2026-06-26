@@ -1703,3 +1703,60 @@ aside.panel:not(.content-grid) {
   color: var(--muted);
   font-size: 14px;
 }
+
+/* ── Photo Position Picker ──────────────────────────────────── */
+.photo-position-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.photo-position-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.photo-position-preview:active {
+  cursor: grabbing;
+}
+
+.photo-position-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  display: block;
+}
+
+.photo-position-crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
+  background-size: 33.33% 33.33%;
+}
+
+.photo-position-hint {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(5, 6, 7, 0.52);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  white-space: nowrap;
+}
