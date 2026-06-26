@@ -67,7 +67,7 @@ export default function PhotoCarousel({ photos, altPrefix = 'Sighting photo' }: 
 
       <button
         className="photo-carousel-arrow photo-carousel-arrow--prev"
-        onClick={() => goTo(Math.max(0, activeIdx - 1))}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); goTo(Math.max(0, activeIdx - 1)) }}
         aria-label="Previous photo"
         hidden={activeIdx === 0}
       >
@@ -75,7 +75,7 @@ export default function PhotoCarousel({ photos, altPrefix = 'Sighting photo' }: 
       </button>
       <button
         className="photo-carousel-arrow photo-carousel-arrow--next"
-        onClick={() => goTo(Math.min(photos.length - 1, activeIdx + 1))}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); goTo(Math.min(photos.length - 1, activeIdx + 1)) }}
         aria-label="Next photo"
         hidden={activeIdx === photos.length - 1}
       >
@@ -87,7 +87,7 @@ export default function PhotoCarousel({ photos, altPrefix = 'Sighting photo' }: 
           <button
             key={i}
             className={`photo-carousel-dot${i === activeIdx ? ' active' : ''}`}
-            onClick={() => goTo(i)}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); goTo(i) }}
             aria-label={`Photo ${i + 1}`}
           />
         ))}
