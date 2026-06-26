@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { fetchCollectorData } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
 import EditSightingForm from './EditSightingForm'
 
 export default async function EditSightingPage({

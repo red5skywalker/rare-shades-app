@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { deleteSighting } from '@/app/actions'
 import { colorImagePath, getColorBySlug } from '@/lib/colors'
-import { fetchCollectorData, formatDate, rarityClass } from '@/lib/app-data'
+import { formatDate, rarityClass, getSightingPhotos } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
+import PhotoCarousel from '@/app/(main)/components/PhotoCarousel'
 
 export default async function SightingDetailPage({
   params,
@@ -32,6 +34,9 @@ export default async function SightingDetailPage({
     await deleteSighting(id)
   }
 
+  const photos = getSightingPhotos(sighting)
+  const heroPhoto = photos[0]?.photo_url ?? colorImagePath(color) ?? '/hero-car.png'
+
   return (
     <>
       <section
@@ -59,7 +64,7 @@ export default async function SightingDetailPage({
           </div>
         </div>
         <div className="car-stage" aria-hidden="true">
-          <img src={sighting.photo_url ?? colorImagePath(color) ?? '/hero-car.png'} alt="" />
+          <img src={heroPhoto} alt="" />
         </div>
       </section>
 
@@ -67,20 +72,10 @@ export default async function SightingDetailPage({
         <section>
           <article className="sighting-card">
             <div
-              className={`sighting-media${sighting.photo_url ? ' has-photo' : ''}`}
+              className={`sighting-media${photos.length > 0 ? ' has-photo' : ''}`}
               style={{ '--paint-one': color.hex[0], '--paint-two': color.hex[1] } as CSSProperties}
             >
-              {sighting.photo_url && (
-                <img
-                  src={sighting.photo_url}
-                  alt={`${color.name} sighting`}
-                  style={{
-                    objectPosition: sighting.photo_position ?? '50% 50%',
-                    transform: `scale(${sighting.photo_scale ?? 1})`,
-                    transformOrigin: sighting.photo_position ?? '50% 50%',
-                  }}
-                />
-              )}
+              <PhotoCarousel photos={photos} altPrefix={`${color.name} sighting`} />
             </div>
             <div className="card-body">
               <div className="meta-row">

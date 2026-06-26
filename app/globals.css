@@ -1792,3 +1792,89 @@ aside.panel:not(.content-grid) {
   min-width: 32px;
   text-align: right;
 }
+
+/* ── Photo Carousel ─────────────────────────────────────────── */
+.photo-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.photo-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  width: 100%;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.photo-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.photo-carousel-slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+.photo-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-carousel-dots {
+  position: absolute;
+  bottom: 22px; /* above the paint bar */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 4;
+}
+
+.photo-carousel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.photo-carousel-dot.active {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Multi Photo Upload ─────────────────────────────────────── */
+.multi-photo-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.photo-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.photo-slot--deleted {
+  opacity: 0.45;
+}
+
+.photo-slot-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+}

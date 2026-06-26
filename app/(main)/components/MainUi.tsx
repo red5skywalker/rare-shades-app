@@ -1,7 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react'
 import Link from 'next/link'
 import { colorImagePath, type PorscheColor } from '@/lib/colors'
-import { formatDate, rarityClass, type Sighting } from '@/lib/app-data'
+import { formatDate, rarityClass, getSightingPhotos, type Sighting } from '@/lib/app-data'
+import PhotoCarousel from './PhotoCarousel'
 
 export function StatCard({
   label,
@@ -72,24 +73,15 @@ export function ColorCard({ color }: { color: PorscheColor }) {
 }
 
 export function SightingCard({ sighting, color }: { sighting: Sighting; color: PorscheColor }) {
+  const photos = getSightingPhotos(sighting)
   return (
     <Link href={`/logbook/${sighting.id}`} style={{ textDecoration: 'none', display: 'block' }}>
       <article className="sighting-card">
         <div
-          className={`sighting-media${sighting.photo_url ? ' has-photo' : ''}`}
+          className={`sighting-media${photos.length > 0 ? ' has-photo' : ''}`}
           style={{ '--paint-one': color.hex[0], '--paint-two': color.hex[1] } as CSSProperties}
         >
-          {sighting.photo_url && (
-            <img
-              src={sighting.photo_url}
-              alt={`${color.name} sighting`}
-              style={{
-                objectPosition: sighting.photo_position ?? '50% 50%',
-                transform: `scale(${sighting.photo_scale ?? 1})`,
-                transformOrigin: sighting.photo_position ?? '50% 50%',
-              }}
-            />
-          )}
+          <PhotoCarousel photos={photos} altPrefix={`${color.name} sighting`} />
         </div>
         <div className="card-body">
           <div className="meta-row">

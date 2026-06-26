@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { buildDisplayIdentity, fetchCollectorData, formatDate } from '@/lib/app-data'
+import { buildDisplayIdentity, formatDate } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
 import { EmptyState, TimelineList } from '@/app/(main)/components/MainUi'
 
 export default async function ProfilePage() {

@@ -5,31 +5,30 @@ import { useState, useTransition } from 'react'
 import { updateSighting } from '@/app/actions'
 import { MODELS } from '@/lib/models'
 import type { Sighting } from '@/lib/app-data'
+import { getSightingPhotos } from '@/lib/app-data'
 import ColorPicker from '@/app/(main)/components/ColorPicker'
 import SearchableSelect from '@/app/(main)/components/SearchableSelect'
-import PhotoPositionPicker from '@/app/(main)/components/PhotoPositionPicker'
+import MultiPhotoUpload from '@/app/(main)/components/MultiPhotoUpload'
 
 export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [removePhoto, setRemovePhoto] = useState(false)
-  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null)
+  const existingPhotos = getSightingPhotos(sighting)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
 
     const formData = new FormData(event.currentTarget)
-    formData.set('remove_photo', removePhoto ? 'true' : 'false')
 
     if (!formData.get('color_slug')) {
       setError('Please select a color.')
       return
     }
 
-    const photo = formData.get('photo') as File | null
+    const photo = formData.get('new_photo_0') as File | null
     if (photo && photo.size > 8 * 1024 * 1024) {
-      setError('Photo must be under 8 MB. Try a smaller or compressed image.')
+      setError('Photos must be under 8 MB each.')
       return
     }
 
@@ -108,58 +107,13 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
               />
             </div>
             <div className="field full">
-              <label htmlFor="photo">
-                Photo{' '}
+              <label>
+                Photos{' '}
                 <span style={{ fontWeight: 400, color: 'var(--muted)' }}>
-                  {sighting.photo_url ? '(upload to replace current)' : '(optional)'}
+                  (up to 3)
                 </span>
               </label>
-              {sighting.photo_url && !removePhoto && !photoPreviewUrl && (
-                <div style={{ marginBottom: 10 }}>
-                  <PhotoPositionPicker
-                    src={sighting.photo_url}
-                    initialPosition={sighting.photo_position ?? '50% 50%'}
-                    initialScale={sighting.photo_scale ?? 1}
-                  />
-                  <button
-                    type="button"
-                    className="ghost-button"
-                    style={{ marginTop: 8, color: 'var(--red)', fontSize: 13 }}
-                    onClick={() => setRemovePhoto(true)}
-                  >
-                    Remove photo
-                  </button>
-                </div>
-              )}
-              {removePhoto && (
-                <p style={{ fontSize: 13, color: 'var(--red)', marginBottom: 8 }}>
-                  Photo will be removed on save.{' '}
-                  <button
-                    type="button"
-                    className="ghost-button"
-                    style={{ fontSize: 13 }}
-                    onClick={() => setRemovePhoto(false)}
-                  >
-                    Undo
-                  </button>
-                </p>
-              )}
-              {!removePhoto && (
-                <input
-                  id="photo"
-                  name="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) setRemovePhoto(false)
-                    setPhotoPreviewUrl(file ? URL.createObjectURL(file) : null)
-                  }}
-                />
-              )}
-              {photoPreviewUrl && (
-                <PhotoPositionPicker src={photoPreviewUrl} />
-              )}
+              <MultiPhotoUpload existingPhotos={existingPhotos.filter(p => p.id !== 'legacy')} maxPhotos={3} />
             </div>
           </div>
           <div className="form-actions" style={{ marginTop: 16 }}>

@@ -85,18 +85,24 @@ export async function createSighting(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  const photoFile = formData.get('photo') as File | null
-  const photoPosition = (formData.get('photo_position') as string) || '50% 50%'
-  const photoScale = parseFloat((formData.get('photo_scale') as string) || '1') || 1
-  if (photoFile && photoFile.size > 0) {
+  // Upload up to 3 photos into sighting_photo table
+  for (let i = 0; i < 3; i++) {
+    const photoFile = formData.get(`photo_${i}`) as File | null
+    if (!photoFile || photoFile.size === 0) continue
+    const position = (formData.get(`photo_${i}_position`) as string) || '50% 50%'
+    const scale = parseFloat((formData.get(`photo_${i}_scale`) as string) || '1') || 1
     const ext = photoFile.type.split('/')[1] || 'jpg'
-    const path = `${user.id}/${inserted.id}.${ext}`
-    const { error: uploadError } = await supabase.storage
-      .from('sighting-photos')
-      .upload(path, photoFile)
+    const path = `${user.id}/${inserted.id}_${i}.${ext}`
+    const { error: uploadError } = await supabase.storage.from('sighting-photos').upload(path, photoFile)
     if (!uploadError) {
       const { data: { publicUrl } } = supabase.storage.from('sighting-photos').getPublicUrl(path)
-      await supabase.from('sighting').update({ photo_url: publicUrl, photo_position: photoPosition, photo_scale: photoScale }).eq('id', inserted.id)
+      await supabase.from('sighting_photo').insert({
+        sighting_id: inserted.id,
+        photo_url: publicUrl,
+        photo_position: position,
+        photo_scale: scale,
+        sort_order: i,
+      })
     }
   }
 
@@ -112,7 +118,7 @@ export async function updateSighting(id: string, formData: FormData) {
 
   const { data: existing } = await supabase
     .from('sighting')
-    .select('id, photo_url, photo_position')
+    .select('id, photo_url')
     .eq('id', id)
     .eq('user_id', user.id)
     .maybeSingle()
@@ -128,41 +134,12 @@ export async function updateSighting(id: string, formData: FormData) {
   const spottedOn = formData.get('spotted_on') as string
   const locationLabel = formData.get('location_label') as string
   const notes = (formData.get('notes') as string) || null
-  const _removePhoto = formData.get('remove_photo') === 'true'
-  const _newPhotoFile = formData.get('photo') as File | null
-  // If a new file was selected, it overrides the remove flag
-  const removePhoto = _removePhoto && !(_newPhotoFile && _newPhotoFile.size > 0)
 
   if (!model || !spottedOn || !locationLabel) {
     return { error: 'Model, date, and location are required.' }
   }
 
-  let photoUrl: string | null = existing.photo_url ?? null
-  let photoPosition: string = (existing as { photo_position?: string }).photo_position ?? '50% 50%'
-  let photoScale: number = (existing as { photo_scale?: number }).photo_scale ?? 1
-  if (removePhoto) {
-    photoUrl = null
-    photoPosition = '50% 50%'
-    photoScale = 1
-  } else {
-    const incomingPosition = (formData.get('photo_position') as string) || '50% 50%'
-    const incomingScale = parseFloat((formData.get('photo_scale') as string) || '1') || 1
-    photoPosition = incomingPosition
-    photoScale = incomingScale
-    const photoFile = formData.get('photo') as File | null
-    if (photoFile && photoFile.size > 0) {
-      const ext = photoFile.type.split('/')[1] || 'jpg'
-      const path = `${user.id}/${id}.${ext}`
-      const { error: uploadError } = await supabase.storage
-        .from('sighting-photos')
-        .upload(path, photoFile, { upsert: true })
-      if (!uploadError) {
-        const { data: { publicUrl } } = supabase.storage.from('sighting-photos').getPublicUrl(path)
-        photoUrl = publicUrl
-      }
-    }
-  }
-
+  // Update sighting row (no photo fields — those live in sighting_photo)
   const { error } = await supabase
     .from('sighting')
     .update({
@@ -176,14 +153,51 @@ export async function updateSighting(id: string, formData: FormData) {
       spotted_on: spottedOn,
       location_label: locationLabel,
       notes,
-      photo_url: photoUrl,
-      photo_position: photoPosition,
-      photo_scale: photoScale,
     })
     .eq('id', id)
     .eq('user_id', user.id)
 
   if (error) return { error: error.message }
+
+  // Delete photos the user removed
+  const deletePhotoIdsRaw = (formData.get('delete_photo_ids') as string) || ''
+  const deletePhotoIds = deletePhotoIdsRaw.split(',').filter(Boolean)
+  if (deletePhotoIds.length > 0) {
+    await supabase.from('sighting_photo').delete().in('id', deletePhotoIds)
+  }
+
+  // Update position/scale on kept existing photos
+  const { data: keptPhotos } = await supabase
+    .from('sighting_photo')
+    .select('id, photo_position, photo_scale')
+    .eq('sighting_id', id)
+  for (const photo of keptPhotos ?? []) {
+    const position = (formData.get(`existing_${photo.id}_position`) as string) || photo.photo_position
+    const scale = parseFloat((formData.get(`existing_${photo.id}_scale`) as string) || String(photo.photo_scale)) || photo.photo_scale
+    await supabase.from('sighting_photo').update({ photo_position: position, photo_scale: scale }).eq('id', photo.id)
+  }
+
+  // Upload new photos
+  const currentCount = (keptPhotos?.length ?? 0)
+  for (let i = 0; i < 3; i++) {
+    const photoFile = formData.get(`new_photo_${i}`) as File | null
+    if (!photoFile || photoFile.size === 0) continue
+    const position = (formData.get(`new_photo_${i}_position`) as string) || '50% 50%'
+    const scale = parseFloat((formData.get(`new_photo_${i}_scale`) as string) || '1') || 1
+    const ext = photoFile.type.split('/')[1] || 'jpg'
+    const path = `${user.id}/${id}_new_${Date.now()}_${i}.${ext}`
+    const { error: uploadError } = await supabase.storage.from('sighting-photos').upload(path, photoFile)
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabase.storage.from('sighting-photos').getPublicUrl(path)
+      await supabase.from('sighting_photo').insert({
+        sighting_id: id,
+        photo_url: publicUrl,
+        photo_position: position,
+        photo_scale: scale,
+        sort_order: currentCount + i,
+      })
+    }
+  }
 
   revalidatePath('/logbook')
   redirect(`/logbook/${id}`)

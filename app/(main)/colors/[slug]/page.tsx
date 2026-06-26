@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { colorImagePath, getColorBySlug } from '@/lib/colors'
-import { fetchCollectorData } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
 import { EmptyState, SightingCard } from '@/app/(main)/components/MainUi'
 
 export default async function ColorDetailPage({

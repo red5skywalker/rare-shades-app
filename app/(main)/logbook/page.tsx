@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { COLORS, colorImagePath, getColorBySlug } from '@/lib/colors'
-import { buildDisplayIdentity, fetchCollectorData } from '@/lib/app-data'
+import { buildDisplayIdentity } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
 import { EmptyState, SightingCard, StatCard } from '@/app/(main)/components/MainUi'
 
 export default async function LogbookPage() {

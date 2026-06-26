@@ -52,12 +52,26 @@ create table if not exists public.sighting (
 
 create index if not exists sighting_user_idx on public.sighting(user_id, spotted_on desc);
 
+-- 4. Sighting photos (supports up to 3 per sighting)
+create table if not exists public.sighting_photo (
+  id           uuid primary key default uuid_generate_v4(),
+  sighting_id  uuid not null references public.sighting(id) on delete cascade,
+  photo_url    text not null,
+  photo_position text not null default '50% 50%',
+  photo_scale  float not null default 1.0,
+  sort_order   int  not null default 0,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists sighting_photo_sighting_idx on public.sighting_photo(sighting_id, sort_order);
+
 -- ============================================================
 -- Row Level Security
 -- ============================================================
 
 alter table public.app_user enable row level security;
 alter table public.sighting  enable row level security;
+alter table public.sighting_photo enable row level security;
 
 -- app_user: users can only see and edit their own profile
 create policy "Users can view own profile"
@@ -84,6 +98,23 @@ create policy "Users can update own sightings"
 create policy "Users can delete own sightings"
   on public.sighting for delete
   using (auth.uid() = user_id);
+
+-- sighting_photo: accessible through sighting ownership
+create policy "Users can view own sighting photos"
+  on public.sighting_photo for select
+  using (sighting_id in (select id from public.sighting where user_id = auth.uid()));
+
+create policy "Users can insert own sighting photos"
+  on public.sighting_photo for insert
+  with check (sighting_id in (select id from public.sighting where user_id = auth.uid()));
+
+create policy "Users can update own sighting photos"
+  on public.sighting_photo for update
+  using (sighting_id in (select id from public.sighting where user_id = auth.uid()));
+
+create policy "Users can delete own sighting photos"
+  on public.sighting_photo for delete
+  using (sighting_id in (select id from public.sighting where user_id = auth.uid()));
 
 -- ============================================================
 -- Trigger: auto-create app_user when someone signs up

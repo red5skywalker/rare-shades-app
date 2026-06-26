@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { COLORS, colorImagePath, getColorBySlug } from '@/lib/colors'
-import { buildDisplayIdentity, fetchCollectorData, formatDate } from '@/lib/app-data'
+import { buildDisplayIdentity, formatDate } from '@/lib/app-data'
+import { fetchCollectorData } from '@/lib/collector'
 import { ColorCard, EmptyState, StatCard, TimelineList } from '@/app/(main)/components/MainUi'
 
 export default async function CollectionPage() {
