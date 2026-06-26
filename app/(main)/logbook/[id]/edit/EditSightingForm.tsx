@@ -152,11 +152,12 @@ export default function EditSightingForm({ sighting }: { sighting: Sighting }) {
                   accept="image/*"
                   onChange={(e) => {
                     const file = e.target.files?.[0]
+                    if (file) setRemovePhoto(false)
                     setPhotoPreviewUrl(file ? URL.createObjectURL(file) : null)
                   }}
                 />
               )}
-              {photoPreviewUrl && !removePhoto && (
+              {photoPreviewUrl && (
                 <PhotoPositionPicker src={photoPreviewUrl} />
               )}
             </div>

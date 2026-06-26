@@ -128,7 +128,10 @@ export async function updateSighting(id: string, formData: FormData) {
   const spottedOn = formData.get('spotted_on') as string
   const locationLabel = formData.get('location_label') as string
   const notes = (formData.get('notes') as string) || null
-  const removePhoto = formData.get('remove_photo') === 'true'
+  const _removePhoto = formData.get('remove_photo') === 'true'
+  const _newPhotoFile = formData.get('photo') as File | null
+  // If a new file was selected, it overrides the remove flag
+  const removePhoto = _removePhoto && !(_newPhotoFile && _newPhotoFile.size > 0)
 
   if (!model || !spottedOn || !locationLabel) {
     return { error: 'Model, date, and location are required.' }
