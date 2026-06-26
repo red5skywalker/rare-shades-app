@@ -903,6 +903,17 @@ aside.panel:not(.content-grid) {
     linear-gradient(135deg, var(--paint-one), var(--paint-two));
 }
 
+.sighting-media::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--paint-one), var(--paint-two));
+  z-index: 3;
+}
+
 .sighting-media img {
   position: relative;
   z-index: 1;
