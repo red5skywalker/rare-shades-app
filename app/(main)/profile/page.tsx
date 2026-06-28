@@ -1,7 +1,11 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { buildDisplayIdentity, formatDate } from '@/lib/app-data'
 import { fetchCollectorData } from '@/lib/collector'
 import { EmptyState, TimelineList } from '@/app/(main)/components/MainUi'
+import ProfileEditForm from './ProfileEditForm'
+
+export const metadata: Metadata = { title: 'Profile — Rare Shades' }
 
 export default async function ProfilePage() {
   const collector = await fetchCollectorData()
@@ -33,7 +37,7 @@ export default async function ProfilePage() {
           </div>
         </div>
       </div>
-      <div className="content-grid" style={{ marginTop: 20 }}>
+      <div className="content-grid grid-2" style={{ marginTop: 20 }}>
         <section className="panel">
           <h2>Recent Sightings Timeline</h2>
           {sightings.length > 0 ? (
@@ -56,6 +60,7 @@ export default async function ProfilePage() {
             <EmptyState title="No sightings yet" body="Your public-facing profile comes to life as you add entries." />
           )}
         </section>
+        <ProfileEditForm profile={profile} username={username} avatarInitials={avatarInitials} />
       </div>
     </section>
   )

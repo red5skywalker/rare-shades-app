@@ -1,6 +1,7 @@
-'use server'
-
+import type { Metadata } from 'next'
 import NewSightingForm from './NewSightingForm'
+
+export const metadata: Metadata = { title: 'Log a Sighting — Rare Shades' }
 
 export default async function NewSightingPage({
   searchParams,

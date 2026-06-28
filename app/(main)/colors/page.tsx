@@ -1,7 +1,10 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { COLORS } from '@/lib/colors'
 import ColorFilters from '@/app/(main)/components/ColorFilters'
 import { ColorCard, EmptyState } from '@/app/(main)/components/MainUi'
+
+export const metadata: Metadata = { title: 'Archive — Rare Shades' }
 
 function firstValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value

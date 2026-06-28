@@ -1,9 +1,16 @@
 import type { CSSProperties } from 'react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { colorImagePath, getColorBySlug } from '@/lib/colors'
 import { fetchCollectorData } from '@/lib/collector'
 import { EmptyState, SightingCard } from '@/app/(main)/components/MainUi'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const color = getColorBySlug(slug)
+  return { title: color ? `${color.name} — Rare Shades` : 'Color — Rare Shades' }
+}
 
 export default async function ColorDetailPage({
   params,

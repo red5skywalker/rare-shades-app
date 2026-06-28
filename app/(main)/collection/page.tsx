@@ -1,10 +1,13 @@
 import type { CSSProperties } from 'react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { COLORS, colorImagePath, getColorBySlug } from '@/lib/colors'
 import { buildDisplayIdentity, formatDate } from '@/lib/app-data'
 import { fetchCollectorData } from '@/lib/collector'
 import { ColorCard, EmptyState, StatCard, TimelineList } from '@/app/(main)/components/MainUi'
+
+export const metadata: Metadata = { title: 'Collection — Rare Shades' }
 
 export default async function CollectionPage() {
   const collector = await fetchCollectorData()

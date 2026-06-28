@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { colorImagePath, getColorBySlug } from '@/lib/colors'
@@ -6,6 +7,13 @@ import { formatDate, rarityClass, getSightingPhotos } from '@/lib/app-data'
 import { fetchSighting } from '@/lib/collector'
 import PhotoCarousel from '@/app/(main)/components/PhotoCarousel'
 import DeleteSightingButton from './DeleteSightingButton'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const sighting = await fetchSighting(id)
+  const color = sighting ? getColorBySlug(sighting.color_slug) : null
+  return { title: color ? `${color.name} sighting — Rare Shades` : 'Sighting — Rare Shades' }
+}
 
 export default async function SightingDetailPage({
   params,

@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   description: "Log and track rare Porsche paint color sightings.",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{

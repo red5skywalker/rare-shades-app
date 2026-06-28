@@ -128,31 +128,12 @@ export async function updateSighting(id: string, formData: FormData) {
 
   const { data: existing } = await supabase
     .from('sighting')
-    .select('id, photo_url')
+    .select('id')
     .eq('id', id)
     .eq('user_id', user.id)
     .maybeSingle()
 
   if (!existing) return { error: 'Sighting not found.' }
-
-  // Auto-migrate legacy photo_url into sighting_photo if not yet done
-  if (existing.photo_url) {
-    const { count } = await supabase
-      .from('sighting_photo')
-      .select('id', { count: 'exact', head: true })
-      .eq('sighting_id', id)
-    if ((count ?? 0) === 0) {
-      await supabase.from('sighting_photo').insert({
-        sighting_id: id,
-        photo_url: existing.photo_url,
-        photo_position: '50% 50%',
-        photo_scale: 1,
-        sort_order: 0,
-      })
-    }
-    // Always clear the legacy column so the fallback never resurfaces
-    await supabase.from('sighting').update({ photo_url: null }).eq('id', id)
-  }
 
   const colorSlug = formData.get('color_slug') as string
   const color = getColorBySlug(colorSlug)
@@ -251,4 +232,51 @@ export async function deleteSighting(id: string) {
 
   revalidatePath('/logbook')
   redirect('/logbook')
+}
+
+export async function requestPasswordReset(formData: FormData) {
+  const supabase = await createClient()
+  const email = formData.get('email') as string
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/reset-password`,
+  })
+
+  if (error) return { error: error.message }
+  return { success: 'Check your email for a password reset link.' }
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient()
+  const password = formData.get('password') as string
+
+  const { error } = await supabase.auth.updateUser({ password })
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/', 'layout')
+  redirect('/logbook')
+}
+
+export async function updateProfile(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const username = (formData.get('username') as string).trim()
+  const bio = (formData.get('bio') as string).trim() || null
+  const avatarInitials = (formData.get('avatar_initials') as string).trim().slice(0, 2).toUpperCase() || null
+
+  if (!username) return { error: 'Username is required.' }
+
+  const { error } = await supabase
+    .from('app_user')
+    .update({ username, bio, avatar_initials: avatarInitials })
+    .eq('id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/profile')
+  revalidatePath('/', 'layout')
+  return { success: 'Profile updated.' }
 }

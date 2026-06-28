@@ -28,10 +28,13 @@ export default function NewSightingForm({ initialColorSlug }: { initialColorSlug
       return
     }
 
-    const photo = formData.get('new_photo_0') as File | null
-    if (photo && photo.size > 8 * 1024 * 1024) {
-      setError('Photos must be under 8 MB each.')
-      return
+    const MAX_PHOTO_MB = 10 * 1024 * 1024
+    for (let i = 0; i < 3; i++) {
+      const photo = formData.get(`photo_${i}`) as File | null
+      if (photo && photo.size > MAX_PHOTO_MB) {
+        setError('Photos must be under 10 MB each.')
+        return
+      }
     }
 
     startTransition(async () => {
