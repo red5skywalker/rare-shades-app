@@ -1360,14 +1360,7 @@ aside.panel:not(.content-grid) {
 }
 
 .paint-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  mix-blend-mode: multiply;
-  transition: transform 320ms ease;
+  display: none;
 }
 
 .color-card:hover .paint-image {
