@@ -82,7 +82,7 @@ export default async function SightingDetailPage({
                 <span>{color.family}</span>
               </div>
               <h3 style={{ marginTop: 10 }}>{color.name}</h3>
-              <p>{sighting.notes ?? 'No notes yet.'}</p>
+              <p>{sighting.notes ?? ''}</p>
               <div className="meta-row">
                 <span>{sighting.model}</span>
                 <span>{sighting.model_year ?? ''}</span>
@@ -124,7 +124,7 @@ export default async function SightingDetailPage({
           </section>
           <section className="panel">
             <h2>Notes</h2>
-            <p>{sighting.notes ?? 'No notes yet.'}</p>
+            <p>{sighting.notes ?? ''}</p>
             <DeleteSightingButton sightingId={id} />
           </section>
         </aside>

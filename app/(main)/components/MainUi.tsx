@@ -53,18 +53,18 @@ export function ColorCard({ color }: { color: PorscheColor }) {
               loading="lazy"
             />
           )}
-          <span className={`rarity-pill ${rarityClass(color.rarityCategory)}`}>{color.rarityCategory}</span>
         </div>
-        <div className="card-body">
-          <div className="meta-row">
-            <span className="family-pill">{color.family}</span>
+        <div className="card-body sighting-card-body">
+          <span className={`sighting-eyebrow ${rarityClass(color.rarityCategory)}`}>{color.rarityCategory}</span>
+          <h3 className="sighting-title">{color.name}</h3>
+          {color.historical && <p className="sighting-notes">{color.historical}</p>}
+          <div className="sighting-details">
+            <span>{color.family}</span>
             <span>{color.code}</span>
             <span>{color.availability}</span>
           </div>
-          <h3 style={{ marginTop: 10 }}>{color.name}</h3>
-          <p>{color.historical}</p>
-          <div className="card-footer">
-            <span className="points">{color.rarityScore} pts</span>
+          <div className="card-footer sighting-footer">
+            <span className="sighting-points">{color.rarityScore} pts</span>
           </div>
         </div>
       </article>
@@ -83,20 +83,18 @@ export function SightingCard({ sighting, color }: { sighting: Sighting; color: P
         >
           <PhotoCarousel photos={photos} altPrefix={`${color.name} sighting`} />
         </div>
-        <div className="card-body">
-          <div className="meta-row">
-            <span className={`rarity-pill ${rarityClass(color.rarityCategory)}`}>{color.rarityCategory}</span>
-          </div>
-          <h3 style={{ marginTop: 10 }}>{color.name}</h3>
-          <p>{sighting.notes ?? 'No notes yet.'}</p>
-          <div className="meta-row">
-            <span>{sighting.model}</span>
-            <span>{sighting.model_year ?? ''}</span>
+        <div className="card-body sighting-card-body">
+          <span className={`sighting-eyebrow ${rarityClass(color.rarityCategory)}`}>{color.rarityCategory}</span>
+          <h3 className="sighting-title">{color.name}</h3>
+          {sighting.notes && <p className="sighting-notes">{sighting.notes}</p>}
+          <div className="sighting-details">
+            {sighting.model_year && <span>{sighting.model_year} {sighting.model}</span>}
+            {!sighting.model_year && sighting.model && <span>{sighting.model}</span>}
             <span>{sighting.location_label}</span>
             <span>{formatDate(sighting.spotted_on)}</span>
           </div>
-          <div className="card-footer" style={{ marginTop: 14 }}>
-            <span className="points">{color.rarityScore} pts</span>
+          <div className="card-footer sighting-footer">
+            <span className="sighting-points">{color.rarityScore} pts</span>
           </div>
         </div>
       </article>

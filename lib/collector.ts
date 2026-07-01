@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { COLORS, getColorBySlug, type PorscheColor } from '@/lib/colors'
 import { createClient } from '@/lib/supabase/server'
@@ -56,7 +57,7 @@ export function computeCollectorStats(sightings: Sighting[]): CollectorStats {
   }
 }
 
-export async function fetchSighting(id: string): Promise<Sighting | null> {
+export const fetchSighting = cache(async function fetchSighting(id: string): Promise<Sighting | null> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -71,9 +72,9 @@ export async function fetchSighting(id: string): Promise<Sighting | null> {
     .maybeSingle()
 
   return (data as Sighting | null) ?? null
-}
+})
 
-export async function fetchCollectorData(): Promise<CollectorData | null> {
+export const fetchCollectorData = cache(async function fetchCollectorData(): Promise<CollectorData | null> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -103,4 +104,4 @@ export async function fetchCollectorData(): Promise<CollectorData | null> {
     sightings: typedSightings,
     stats: computeCollectorStats(typedSightings),
   }
-}
+})
